@@ -16,7 +16,7 @@ namespace mission {
   };
 
   struct order {
-    vector<int> item;
+    vector<int> items;
   };
 
   struct item {
@@ -28,13 +28,13 @@ namespace mission {
   // describes a warehouse and its orders
   class Mission {
   private:
-    vector<string> walls; // '#' if not walkable, ' ' if walkable. If occupied
-                          // by a station, it's also '#'
     vector<pair<int, int> > posToCoors; // precalculated to run toCoors and
     vector<vector<int> > coorsToPos;    // toPos quickly
     bool precalculated = false;
     void precalculate();
   public:
+    vector<string> walls; // '#' if not walkable, ' ' if walkable. If occupied
+                          // by a station, it's also '#'
     vector<robot> robots;
     vector<station> stations;
     vector<order> orders;

@@ -3,6 +3,7 @@
 
 #include "mission.h"
 #include "state.h"
+
 #include <string>
 
 class Situation {
