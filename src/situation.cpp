@@ -1,6 +1,7 @@
 #include "situation.h"
 
 #include <sstream>
+#include <iostream>
 
 string Situation::debugView(){
   stringstream s;
@@ -49,7 +50,7 @@ string Situation::debugView(){
         << station.coors.first << "," << station.coors.second << "}";
     s << " order=" << state.stations[i].order;
 
-    if (state.stations[i].order != int(mission.orders.size())) {
+    if (state.stations[i].order != -1) {
       mission::order order = mission.orders[state.stations[i].order];
       s << "(";
       for(int j = 0; j < int(order.items.size()); j++){

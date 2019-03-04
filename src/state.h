@@ -1,6 +1,8 @@
 #ifndef STATE_H_
 #define STATE_H_
 
+#include "mission.h"
+
 #include<vector>
 #include<string>
 using namespace std;
@@ -8,7 +10,7 @@ using namespace std;
 namespace state {
   struct robot {
     int pos; // use the corresponding mission to convert to coordinates
-    int item; // held item, 0 if none
+    int item; // held item, -1 if none
   };
 
   struct station {
@@ -24,6 +26,7 @@ namespace state {
     vector<station> stations;
 
     State();
+    State(mission::Mission);
     State(unsigned int encoded); // decode from int
     State(string str); // read from string
 

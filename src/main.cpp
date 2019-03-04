@@ -14,5 +14,6 @@ int main(int argc, char* argv[])
     missionString.append("\n");
   }
   situation.mission = mission::Mission(missionString);
+  situation.state = state::State(situation.mission);
   cout << situation.debugView() << endl;
 }
