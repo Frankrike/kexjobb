@@ -6,7 +6,10 @@
 string Situation::debugView(){
   stringstream s;
   vector<string> vs;
-  vs.resize(mission.height, string(' ', 2*mission.width));
+  vs.resize(mission.height, string(2*mission.width, ' '));
+  for(string &str : vs)
+    for(int i = 0; i < mission.width; i++)
+      str[2*i] = '.';
 
   for(int x = 0; x < mission.width; x++)
     for(int y = 0; y < mission.height; y++)
@@ -20,7 +23,7 @@ string Situation::debugView(){
     int x = coors.first, y = coors.second;
 
     vs[y][2*x] = 'R';
-    vs[y][2*x + 1] = robot.item == 0 ? '_' : 'a' + (robot.item - 1);
+    vs[y][2*x + 1] = robot.item == -1 ? '_' : 'a' + robot.item;
   }
 
   for(int i = 0; i < int(mission.stations.size()); i++) {
@@ -29,7 +32,7 @@ string Situation::debugView(){
     int order = state.stations[i].order;
 
     vs[y][2*x] = 'S';
-    vs[y][2*x + 1] = '0' + order;
+    vs[y][2*x + 1] = order != -1 ? char('0' + order) : '_';
   }
 
   for(int i = 0; i < int(mission.items.size()); i++) {
@@ -56,7 +59,8 @@ string Situation::debugView(){
       for(int j = 0; j < int(order.items.size()); j++){
         if(j != 0)
           s << ',';
-        s << 'a' + order.items[j] << (state.stations[i].fulfilled[j] ? 'X' : '_');
+        s << char('a' + order.items[j]) 
+            << (state.stations[i].fulfilled[j] ? 'X' : '_');
       }
       s << ")";
     }
@@ -70,8 +74,8 @@ string Situation::debugView(){
     s << "Order " << i << ": (";
     for(int j = 0; j < int(order.items.size()); j++) {
       if(j != 0)
-        s << j << ",";
-      s << 'a' + order.items[j];
+        s << ",";
+      s << char('a' + order.items[j]);
     }
     s << ")" << endl;
   }
@@ -82,14 +86,14 @@ string Situation::debugView(){
     pair<int, int> coors = mission.toCoors(robot.pos);
     s << "Robot " << i << ": pos=" << robot.pos 
         << "{" << coors.first << "," <<  coors.second << "}"
-        << " item=" << (robot.item == 0 ? '_' : 'a' + (robot.item - 1))
+        << " item=" << (robot.item == -1 ? '_' : char('a' + robot.item))
         << endl;
   }
 
   s << endl;
   for(int i = 0; i < int(mission.items.size()); i ++) {
     mission::item item = mission.items[i];
-    s << "Item " << 'a' + i << ": shelfPos={" 
+    s << "Item " << char('a' + i) << ": shelfPos={" 
         << item.shelfCoors.first << "," <<  item.shelfCoors.second << "}"
         << endl;
   }

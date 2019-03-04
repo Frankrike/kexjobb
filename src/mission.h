@@ -40,7 +40,7 @@ namespace mission {
     vector<order> orders;
     vector<item> items;
     int width, height;
-    int positions; // number of walkable squares
+    int positions = 0; // number of walkable squares
 
     Mission();
     Mission(string str); // construct from string (probably loaded from a file)

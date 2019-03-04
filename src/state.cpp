@@ -6,12 +6,14 @@ namespace state {
   State::State(mission::Mission mission) {
     robots.resize(mission.robots.size());
     stations.resize(mission.robots.size());
-    for(int i = robots.size(); i < robots.size(); i++) {
+    for(int i = 0; i < int(robots.size()); i++) {
         robots[i].pos = mission.robots[i].startPos; // Currently at start position
         robots[i].item = -1; // Holding no item
     }
-    for(int i = 0; i < stations.size(); i++) {
-        stations[i].order = -1;
+    for(int i = 0; i < int(stations.size()); i++) {
+        stations[i].order = i < int(mission.orders.size()) ? i : -1;
+        if (stations[i].order != -1)
+          stations[i].fulfilled.assign(mission.orders[i].items.size(), false);
     }
   }
 }

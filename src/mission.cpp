@@ -16,7 +16,7 @@ namespace mission {
     s >> height;
 
     walls.resize(width);
-    for(int i = 0; i < walls.size(); i++) {
+    for(int i = 0; i < int(walls.size()); i++) {
       walls[i].resize(height);
     }
 
@@ -24,7 +24,7 @@ namespace mission {
     for(int y = 0; y < height; y++) {
       string row;
       s >> row;
-      for(int x = 0; x < row.size(); x++) {
+      for(int x = 0; x < int(row.size()); x++) {
         walls[x][y] = row[x];
       }
     }
