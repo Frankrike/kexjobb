@@ -15,6 +15,20 @@ namespace mission {
     s >> width;
     s >> height;
 
+    walls.resize(width);
+    for(int i = 0; i < walls.size(); i++) {
+      walls[i].resize(height);
+    }
+
+    // Read wall layout
+    for(int y = 0; y < height; y++) {
+      string row;
+      s >> row;
+      for(int x = 0; x < row.size(); x++) {
+        walls[x][y] = row[x];
+      }
+    }
+
     // Read the items
     int numItems;
     s >> numItems;
@@ -56,6 +70,7 @@ namespace mission {
       int x, y;
       s >> x >> y;
       currentRobot.startPos = toPos(make_pair(x, y));
+      robots[i] = currentRobot;
     }
 
     // Read the order queue
@@ -82,11 +97,6 @@ namespace mission {
       return;
     precalculated = true;
     assert(positions == 0);
-
-    walls.resize(width);
-    for(int i = 0; i < walls.size(); i++) {
-      walls[i].assign(height, '.');
-    }
 
     // stations and shelves are not walkable
     for(station s : stations)
