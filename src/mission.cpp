@@ -25,6 +25,7 @@ namespace mission {
       string row;
       s >> row;
       for(int x = 0; x < int(row.size()); x++) {
+        assert(row[x] == '.' || row[x] == '#');
         walls[x][y] = row[x];
       }
     }
@@ -37,6 +38,8 @@ namespace mission {
       item currentItem;
       int x, y;
       s >> x >> y;
+      assert(x >= 0 && x < width);
+      assert(y >= 0 && y < height);
       currentItem.shelfCoors.first = x;
       currentItem.shelfCoors.second = y;
       items[i] = currentItem;
@@ -50,6 +53,8 @@ namespace mission {
       station currentStation;
       int x, y;
       s >> x >> y;
+      assert(x >= 0 && x < width);
+      assert(y >= 0 && y < height);
       currentStation.coors.first = x;
       currentStation.coors.second = y;
       stations[i] = currentStation;
@@ -69,6 +74,8 @@ namespace mission {
       robot currentRobot;
       int x, y;
       s >> x >> y;
+      assert(x >= 0 && x < width);
+      assert(y >= 0 && y < height);
       currentRobot.startPos = toPos(make_pair(x, y));
       robots[i] = currentRobot;
     }
@@ -78,13 +85,15 @@ namespace mission {
     s >> numOrders;
     orders.resize(numOrders);
     for(int i = 0; i < numOrders; i++) {
-      int numItems;
-      s >> numItems;
+      int numItemsInOrder;
+      s >> numItemsInOrder;
       order currentOrder;
-      currentOrder.items.resize(numItems);
-      for(int j = 0; j < numItems; j++) {
+      currentOrder.items.resize(numItemsInOrder);
+      for(int j = 0; j < numItemsInOrder; j++) {
         int itemNumber;
         s >> itemNumber;
+        assert(itemNumber >= 0);
+        assert(itemNumber < numItems);
         currentOrder.items[j] = itemNumber;
       }
       orders[i] = currentOrder;
@@ -100,7 +109,7 @@ namespace mission {
 
     // stations and shelves are not walkable
     for(station s : stations)
-      walls[s.coors.first][s.coors.second] = 'S';
+      walls[s.coors.first][s.coors.second] = '#';
     for(item i : items)
       walls[i.shelfCoors.first][i.shelfCoors.second] = '#';
 
