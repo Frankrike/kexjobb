@@ -100,3 +100,10 @@ string Situation::debugView(){
 
   return s.str();
 }
+
+bool Situation::missionCompleted(){
+  bool completed = true;
+  for(state::station s : state.stations)
+    completed &= s.order == -1;
+  return completed;
+}

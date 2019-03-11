@@ -14,7 +14,7 @@ namespace state {
   };
 
   struct station {
-    int order; // which order from the global queue it's currently handling
+    int order; // which order from the global queue it's currently handling, -1 if none
     vector<bool> fulfilled; // which items have been fetched
   };
 

@@ -18,9 +18,12 @@ int main(int argc, char* argv[])
   situation.state = state::State(situation.mission);
 
   algorithm::Algorithm algorithm = algorithm::Algorithm(&situation);
-  for(int i = 0; i < 10; i++) {
-    cout << situation.debugView() << endl;
+  
+  cout << situation.debugView() << endl;
+  int turn = 0;
+  while(!situation.missionCompleted()) {
     algorithm.makeMove();
+    cout << "------\nturn: " << ++turn << endl << situation.debugView() << endl;
   }
   
 }
