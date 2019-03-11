@@ -2,6 +2,7 @@
 #include "state.h"
 #include "mission.h"
 #include "situation.h"
+#include "algorithm.h"
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -15,5 +16,11 @@ int main(int argc, char* argv[])
   }
   situation.mission = mission::Mission(missionString);
   situation.state = state::State(situation.mission);
-  cout << situation.debugView() << endl;
+
+  algorithm::Algorithm algorithm = algorithm::Algorithm(&situation);
+  for(int i = 0; i < 10; i++) {
+    cout << situation.debugView() << endl;
+    algorithm.makeMove();
+  }
+  
 }
