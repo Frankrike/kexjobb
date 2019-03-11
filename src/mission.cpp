@@ -121,6 +121,30 @@ namespace mission {
           posToCoors.push_back({x, y});
           positions ++;
         }
+
+    // which positions, stations, and items are adjacent to each position
+    adjPosV.resize(positions);
+    adjStationsV.resize(positions);
+    adjItemsV.resize(positions);
+
+    for(int pos = 0; pos < positions; pos++){
+      int delta[5] = {0, 1, 0, -1, 0};
+      for(int d = 0; d < 4; d++) {
+        pair<int, int> coors =
+            {toCoors(pos).first + delta[d], toCoors(pos).second + delta[d+1]};
+
+        if (toPos(coors) != -1)
+          adjPosV[pos].push_back(toPos(coors));
+        else {
+          for(int i = 0; i < int(stations.size()); i++)
+            if (coors == stations[i].coors)
+              adjStationsV[pos].push_back(i);
+          for(int i = 0; i < int(items.size()); i++)
+            if (coors == items[i].shelfCoors)
+              adjItemsV[pos].push_back(i);
+        }
+      }
+    }
   }
 
   pair<int, int> Mission::toCoors(int pos){
@@ -130,7 +154,25 @@ namespace mission {
 
   int Mission::toPos(pair<int, int> coors){
     precalculate();
+    if (coors.first < 0 || coors.second < 0 
+        || coors.first >= width || coors.second >= height)
+      return -1;
     return coorsToPos[coors.first][coors.second];
+  }
+
+  vector<int> Mission::adjPos(int pos){
+    precalculate();
+    return adjPosV[pos];
+  }
+
+  vector<int> Mission::adjStations(int pos){
+    precalculate();
+    return adjStationsV[pos];
+
+  }
+  vector<int> Mission::adjItems(int pos){
+    precalculate();
+    return adjItemsV[pos];
   }
 }
 

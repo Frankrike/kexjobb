@@ -30,6 +30,7 @@ namespace mission {
   private:
     vector<pair<int, int> > posToCoors; // precalculated to run toCoors and
     vector<vector<int> > coorsToPos;    // toPos quickly
+    vector<vector<int> > adjPosV, adjStationsV, adjItemsV;
     bool precalculated = false;
     void precalculate();
   public:
@@ -47,11 +48,13 @@ namespace mission {
 
     string toString(); // the mission as a string (to be written to a file)
 
-    void finalize(); // runs precalculations
     pair<int, int> toCoors(int pos); // only walkable space
                                      // translates to coordinates
     int toPos(pair<int, int> coors); // returns -1 if the coordinates are not at
                                      // walkable space
+    vector<int> adjPos(int pos);      // positions one step from pos
+    vector<int> adjStations(int pos); // stations one step from pos
+    vector<int> adjItems(int pos);    // items one step from pos
   };
 }
 
