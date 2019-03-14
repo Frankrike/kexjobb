@@ -6,18 +6,15 @@
 namespace algorithm {
 
 class Algorithm {
-private:
+protected:
   Situation* situation;
   void deliverItem(int item, int station);
+  void moveTowards(state::robot &r, pair<int, int> coors);
+  void moveAround(state::robot &r);
   bool occupied(int pos);
 public:
   Algorithm(Situation* s);  
   void makeMove();
-};
-
-class Pinkam1 : public Algorithm  {
-public:
-  void makeMove(); 
 };
 
 }

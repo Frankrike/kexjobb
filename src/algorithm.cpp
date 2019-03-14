@@ -60,13 +60,7 @@ namespace algorithm {
       if (done)
         continue;
 
-      // move randomly
-      vector<int> adj = mission.adjPos(r.pos);
-      if (adj.size() != 0) {
-        int pos = adj[rand()%adj.size()];
-        if (!occupied(pos))
-          r.pos = pos;
-      }
+      moveTowards(r, make_pair(0, 0));
     }
   }
 
@@ -81,6 +75,7 @@ namespace algorithm {
     for(int i = 0; i < int(order.items.size()); i++)
       if (!station.fulfilled[i] && order.items[i] == item) {
         station.fulfilled[i] = true;
+        station.assignedTo[i] = -1;
         item = -1;
         break;
       }
@@ -103,8 +98,25 @@ namespace algorithm {
       if (station.order != -1) {
         station.fulfilled.assign(
             mission.orders[station.order].items.size(), false);
+        station.assignedTo.assign(mission.orders[station.order].items.size(), -1);
       }
     }
+  }
+
+  void Algorithm::moveTowards(state::robot &r, pair<int, int> coors) {
+    // move randomly
+    mission::Mission &mission = situation->mission;
+      vector<int> adj = mission.adjPos(r.pos);
+      if (adj.size() != 0) {
+        int pos = adj[rand()%adj.size()];
+        if (!occupied(pos))
+          r.pos = pos;
+      }
+  }
+
+  // Try to move somewhere and be out of the way. To be called for robots that have nothing to do
+  void Algorithm::moveAround(state::robot &r) {
+    moveTowards(r, make_pair(0, 0));
   }
 
   bool Algorithm::occupied(int pos) {

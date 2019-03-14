@@ -11,11 +11,14 @@ namespace state {
   struct robot {
     int pos; // use the corresponding mission to convert to coordinates
     int item; // held item, -1 if none
+    int assignedItem; // -1 if none
+    int fixedStation; // used for pinkam1
   };
 
   struct station {
     int order; // which order from the global queue it's currently handling, -1 if none
     vector<bool> fulfilled; // which items have been fetched
+    vector<int> assignedTo; // which robot is currently fetching this item, -1 if none
   };
 
   // describes the state of a mission

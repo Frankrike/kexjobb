@@ -3,6 +3,7 @@
 #include "mission.h"
 #include "situation.h"
 #include "algorithm.h"
+#include "pinkam1.h"
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -17,7 +18,7 @@ int main(int argc, char* argv[])
   situation.mission = mission::Mission(missionString);
   situation.state = state::State(situation.mission);
 
-  algorithm::Algorithm algorithm = algorithm::Algorithm(&situation);
+  algorithm::Pinkam1 algorithm = algorithm::Pinkam1(&situation);
 
   cout << situation.debugView() << endl;
   int turn = 0;
