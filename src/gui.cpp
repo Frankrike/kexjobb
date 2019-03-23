@@ -21,10 +21,21 @@ sf::Vector2f mTopRight;
 const int LHEIGHT = 25, LMARGIN = 2;
 const int RWIDTH = 150;
 sf::Color BACKGROUNDCOL = sf::Color::Black,
-  FLOORCOL = sf::Color::White;
+  FLOORCOL = sf::Color::White,
+  ROBOTCOL = sf::Color::Red;
 
 sf::Vector2f onMap(int x, int y) {
   return mTopRight + sf::Vector2f(x*sw, y*sw);
+}
+sf::Vector2f onMapC(int x, int y) {
+  return mTopRight + sf::Vector2f(x*sw + sw/2, y*sw + sw/2);
+}
+sf::Vector2f onMapC(pair<int, int> p) {
+  return onMapC(p.first, p.second);
+}
+
+sf::Vector2f interp(sf::Vector2f a, sf::Vector2f b, float f) {
+  return a*(1-f) + b*f;
 }
 
 void GUI::show() {
@@ -32,8 +43,12 @@ void GUI::show() {
     states.push_back(state::State(mission));
 
   sf::RenderWindow window(sf::VideoMode(width, height), "GUI");
+  window.setFramerateLimit(60);
   sf::Font font;
   font.loadFromFile("res/SourceSansPro-Regular.ttf");
+
+  int stateId = 0;
+  float trans = 0;
 
   while(window.isOpen()) {
     sf::Event event;
@@ -42,11 +57,20 @@ void GUI::show() {
         window.close();
     }
 
+    trans += 0.04;
+
+    while(trans > 1)
+      stateId = min(int(states.size()) - 1, stateId + 1), trans -= 1;
+    while(trans < 0)
+      stateId = max(0, stateId - 1), trans += 1;
+
+    state::State curS = states[stateId];
+    state::State nextS = stateId+1 < int(states.size()) ? states[stateId+1] : curS;
+
     {
       float mw = width - RWIDTH, mh = height - LHEIGHT;
       sw = min(mw/mission.width, mh/mission.height);
       mTopRight = sf::Vector2f((mw-sw*mission.width)/2, (mh-sw*mission.height)/2);
-      cout << mTopRight.x << " " << mTopRight.y << " " << sw << endl;
     }
 
     window.clear();
@@ -99,16 +123,27 @@ void GUI::show() {
 
     for (int x = 0; x < mission.width; x++)
       for (int y = 0; y < mission.height; y++) {
-        sf::Color color = mission.toPos({x, y}) != -1 ? 
-            sf::Color::White : sf::Color::Black;
-
         sf::RectangleShape rectangle;
         rectangle.setFillColor(
             mission.toPos({x, y}) != -1 ? FLOORCOL : BACKGROUNDCOL);
         rectangle.setPosition(onMap(x, y));
         rectangle.setSize(sf::Vector2f(sw, sw));
         window.draw(rectangle);
-      }
+      } 
+
+    for (int r = 0; r < int(curS.robots.size()); r++) {
+      float rad = sw*0.4f;
+      sf::Vector2f pos = interp(
+        onMapC(mission.toCoors(curS.robots[r].pos)), 
+        onMapC(mission.toCoors(nextS.robots[r].pos)), trans)
+          - sf::Vector2f(rad, rad);
+
+      sf::CircleShape circle;
+      circle.setFillColor(ROBOTCOL);
+      circle.setRadius(rad);
+      circle.setPosition(pos);
+      window.draw(circle);
+    }
 
     window.display();
   }
