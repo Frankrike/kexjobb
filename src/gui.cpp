@@ -34,7 +34,12 @@ sf::Vector2f onMapC(pair<int, int> p) {
   return onMapC(p.first, p.second);
 }
 
+float smooth(float f) {
+  return 3*f*f - 2*f*f*f;
+}
+
 sf::Vector2f interp(sf::Vector2f a, sf::Vector2f b, float f) {
+  f = smooth(f);
   return a*(1-f) + b*f;
 }
 
@@ -50,7 +55,10 @@ void GUI::show() {
   int stateId = 0;
   float trans = 0;
 
+  bool playing = false;
+
   while(window.isOpen()) {
+    bool mouseClicked = false;
     sf::Event event;
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::Closed)
@@ -58,11 +66,15 @@ void GUI::show() {
       else if (event.type == sf::Event::Resized) {
         width = window.getSize().x, height = window.getSize().y;
         window.setView(sf::View(sf::FloatRect(0, 0, width, height)));
+      } else if (event.type == sf::Event::MouseButtonPressed) {
+        mouseClicked = event.mouseButton.button == sf::Mouse::Left;
       }
     }
 
-    trans += 0.04;
+    float dT = 0.0167f;
 
+    if (playing)
+      trans += 1*dT;
     while(trans > 1)
       stateId = min(int(states.size()) - 1, stateId + 1), trans -= 1;
     while(trans < 0)
@@ -116,13 +128,34 @@ void GUI::show() {
         window.draw(text);
         curWidth += w;
 
-        return mouseOver && sf::Mouse::isButtonPressed(sf::Mouse::Left);
+        return mouseOver && mouseClicked;
       };
       int w = LHEIGHT*3;
-      drawButton(w, "<");
-      drawButton(w, "play");
-      drawButton(w, "pause");
-      drawButton(w, ">");
+      if (drawButton(w/2, "<<"))
+        trans = 0, stateId = 0;
+      if (drawButton(w/3, "<")){
+        if (trans != 0)
+          trans = 0;
+        else
+          stateId = max(0, stateId-1);
+      }
+      if (drawButton(w, "play")) {
+        playing = true;
+      }
+      if (drawButton(w, "pause")) {
+        playing = false;
+      }
+      if (drawButton(w/3, ">")) {
+        stateId = min(int(states.size() - 1), stateId+1);
+        trans = 0;
+      }
+      if (drawButton(w/2, ">>"))
+        trans = 0, stateId = int(states.size() - 1);
+
+      string stepText = "State: ";
+      stepText += to_string(stateId);
+      //stepText += " ("; stepText += to_string(trans); stepText += ")";
+      drawButton(0, stepText);
     }
 
     for (int x = 0; x < mission.width; x++)
