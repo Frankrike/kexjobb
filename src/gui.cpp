@@ -55,6 +55,10 @@ void GUI::show() {
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::Closed)
         window.close();
+      else if (event.type == sf::Event::Resized) {
+        width = window.getSize().x, height = window.getSize().y;
+        window.setView(sf::View(sf::FloatRect(0, 0, width, height)));
+      }
     }
 
     trans += 0.04;
