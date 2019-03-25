@@ -87,11 +87,15 @@ namespace algorithm {
 
     if (stationFull) { // updateOrder
       int highestOrder = -1;
-      for(state::station station : state.stations)
-        highestOrder = max(highestOrder, station.order);
+      for(state::station station : state.stations) {
+        int orderHere = station.order;
+        if (orderHere == -1)
+          orderHere = mission.orders.size();
+        highestOrder = max(highestOrder, orderHere);
+      }
 
       int nextOrder = highestOrder + 1;
-      if (nextOrder == int(mission.orders.size()))
+      if (nextOrder >= int(mission.orders.size()))
         nextOrder = -1;
 
       station.order = nextOrder;
