@@ -87,7 +87,6 @@ namespace algorithm {
       stationFull &= b;
 
     if (stationFull) { // updateOrder
-      
       int nextOrder = state.nextOrder;
 
       if (nextOrder == int(mission.orders.size()))

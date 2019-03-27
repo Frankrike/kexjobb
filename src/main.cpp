@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 
   cout << situation.debugView() << endl;
   int turn = 0;
-  while(!situation.missionCompleted()) {
+  while(!situation.missionCompleted() && turn < 1000000) {
     algorithm.makeMove();
     gui.addState(situation.state);
     cout << "--------------\nturn: " << ++turn << endl << situation.debugView() << endl;

@@ -25,7 +25,7 @@ sf::Color BACKGROUNDCOL = sf::Color::Black,
   FLOORCOL = sf::Color::White,
   ROBOTCOL = sf::Color(0xff3333ff),
   ITEMCOL =  sf::Color(0x3333ffff),
-  ITEMEMPTYCOL = sf::Color(0x333333ff),
+  ITEMEMPTYCOL = sf::Color(0x999999ff),
   ITEMFRAMECOL = sf::Color::Black,
   STATIONCOL = sf::Color(0x337733ff);
 const float ITEMRADROBOT = 0.15, ITEMRADSHELF = 0.2, ITEMRADSTATION = 0.1;
@@ -69,6 +69,7 @@ void GUI::show() {
   float trans = 0;
 
   bool playing = true;
+  double speed = 2;
 
   while(window.isOpen()) {
     bool mouseClicked = false;
@@ -87,7 +88,7 @@ void GUI::show() {
     float dT = 0.0167f;
 
     if (playing)
-      trans += 1*dT;
+      trans += speed*dT;
     while(trans > 1)
       stateId = min(int(states.size()) - 1, stateId + 1), trans -= 1;
     while(trans < 0)
@@ -140,19 +141,21 @@ void GUI::show() {
       circle.setPosition(pos - sf::Vector2f(rad, rad));
       window.draw(circle);
       
-      drawText(pos - sf::Vector2f(rad*0.2, rad*0.5),
+      drawText(pos - sf::Vector2f(rad*0.4, rad*1.1),
         ITEMFRAMECOL,
         to_string(item),
-        int(rad));
+        int(rad*1.8));
     };
 
     {
       int curWidth = LHEIGHT/2;
-      auto drawButton = [&](int w, string label) {
+      auto drawButton = [&](int w, string label, bool clickable = true) {
         int x = curWidth + LMARGIN, y = height-LHEIGHT+LMARGIN, h = LHEIGHT-LMARGIN;
         bool mouseOver = false;
         sf::Vector2i mp = sf::Mouse::getPosition(window);
-        mouseOver = (mp.x >= x && mp.y >= y && mp.x <= x+w && mp.y <= y+h);
+        mouseOver = 
+          clickable &&
+          (mp.x >= x && mp.y >= y && mp.x <= x+w && mp.y <= y+h);
 
         drawText(sf::Vector2f(x, y), 
             mouseOver ? sf::Color(0xccccccff) : sf::Color(0xffffffff),
@@ -171,11 +174,8 @@ void GUI::show() {
         else
           stateId = max(0, stateId-1);
       }
-      if (drawButton(w, "play")) {
-        playing = true;
-      }
-      if (drawButton(w, "pause")) {
-        playing = false;
+      if (drawButton(w, playing ? "pause" : "play")) {
+        playing = !playing;
       }
       if (drawButton(w/3, ">")) {
         stateId = min(int(states.size() - 1), stateId+1);
@@ -187,7 +187,13 @@ void GUI::show() {
       string stepText = "State: ";
       stepText += to_string(stateId);
       //stepText += " ("; stepText += to_string(trans); stepText += ")";
-      drawButton(0, stepText);
+      drawButton(w*2, stepText, false);
+      drawButton(w, "speed:", false);
+      if (drawButton(w/3, "+"))
+        speed *= 2;
+      drawButton(w/2, to_string((int)(speed*100)), false);
+      if (drawButton(w/3, "-"))
+        speed /= 2;
     }
 
     for (int x = 0; x < mission.width; x++)
