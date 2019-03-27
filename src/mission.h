@@ -55,6 +55,8 @@ namespace mission {
     vector<int> adjPos(int pos);      // positions one step from pos
     vector<int> adjStations(int pos); // stations one step from pos
     vector<int> adjItems(int pos);    // items one step from pos
+
+    vector<int> adjPos(pair<int, int> coors); // positions one step from coordinates. Used when navigating to shelves or stations
   };
 }
 

@@ -174,5 +174,23 @@ namespace mission {
     precalculate();
     return adjItemsV[pos];
   }
+
+  vector<int> Mission::adjPos(pair<int, int> coors) {
+    vector<int> result;
+
+    int newPos = toPos(make_pair(coors.first+1, coors.second));
+    if(newPos >= 0) result.push_back(newPos);
+
+    newPos = toPos(make_pair(coors.first-1, coors.second));
+    if(newPos >= 0) result.push_back(newPos);
+
+    newPos = toPos(make_pair(coors.first, coors.second+1));
+    if(newPos >= 0) result.push_back(newPos);
+
+    newPos = toPos(make_pair(coors.first-1, coors.second));
+    if(newPos >= 0) result.push_back(newPos);
+
+    return result;
+  }
 }
 

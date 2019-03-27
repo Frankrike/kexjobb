@@ -14,6 +14,7 @@ namespace state {
     }
     for(int i = 0; i < int(stations.size()); i++) {
         stations[i].order = i < int(mission.orders.size()) ? i : -1;
+        if(stations[i].order != -1) nextOrder = stations[i].order+1;
         if (stations[i].order != -1) {
           stations[i].fulfilled.assign(mission.orders[i].items.size(), false);
           stations[i].assignedTo.assign(mission.orders[i].items.size(), -1);

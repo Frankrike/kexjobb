@@ -12,6 +12,8 @@ protected:
   void moveTowards(state::robot &r, pair<int, int> coors);
   void moveAround(state::robot &r);
   bool occupied(int pos);
+  int BFS(int start, int destination);
+  int distance(int start, int destination);
 public:
   Algorithm(Situation* s);  
   void makeMove();

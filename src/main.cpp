@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
   }
   situation.mission = mission::Mission(missionString);
   situation.state = state::State(situation.mission);
-  algorithm::Algorithm algorithm(&situation);
+  algorithm::Pinkam1 algorithm(&situation);
 
   GUI gui(situation.mission);
   gui.addState(situation.state);
@@ -31,4 +31,5 @@ int main(int argc, char* argv[])
     cout << "--------------\nturn: " << ++turn << endl << situation.debugView() << endl;
   }
   gui.show();
+  
 }

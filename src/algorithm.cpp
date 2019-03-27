@@ -4,6 +4,7 @@
 #include <random>
 #include <set>
 #include <cassert>
+#include <queue>
 
 using namespace std;
 
@@ -86,13 +87,12 @@ namespace algorithm {
       stationFull &= b;
 
     if (stationFull) { // updateOrder
-      int highestOrder = -1;
-      for(state::station station : state.stations)
-        highestOrder = max(highestOrder, station.order);
+      
+      int nextOrder = state.nextOrder;
 
-      int nextOrder = highestOrder + 1;
       if (nextOrder == int(mission.orders.size()))
         nextOrder = -1;
+      else state.nextOrder++;
 
       station.order = nextOrder;
       if (station.order != -1) {
@@ -106,12 +106,87 @@ namespace algorithm {
   void Algorithm::moveTowards(state::robot &r, pair<int, int> coors) {
     // move randomly
     mission::Mission &mission = situation->mission;
-      vector<int> adj = mission.adjPos(r.pos);
-      if (adj.size() != 0) {
-        int pos = adj[rand()%adj.size()];
-        if (!occupied(pos))
-          r.pos = pos;
+    vector<int> goalPositions = mission.adjPos(coors);
+    
+    // Try to do a BFS-move
+    for(int goalPos : goalPositions) {
+      int nextPos = BFS(r.pos, goalPos);
+      if(nextPos >= 0) { //Check if it worked
+        r.pos = nextPos;
+        return;
       }
+    }
+
+    // Otherwise do something random
+    vector<int> adj = mission.adjPos(r.pos);
+    if (adj.size() != 0) {
+      int pos = adj[rand()%adj.size()];
+      if (!occupied(pos))
+        r.pos = pos;
+    }
+  }
+
+
+  int Algorithm::BFS(int start, int destination) {
+    vector<int> parent(situation->mission.positions, -1);
+    queue<int> q;
+    q.push(start);
+    parent[start] = -3;
+    while(!q.empty()) {
+      int pos = q.front();
+      q.pop();
+      for(int neighbor : situation->mission.adjPos(pos)) {
+        if(occupied(neighbor))  {
+          parent[neighbor] = -2;
+        }
+        if(parent[neighbor] == -1) {
+          q.push(neighbor);
+          parent[neighbor] = pos;
+        }
+      }
+    }
+    int curpos = destination;
+    while(true) {
+      if(curpos < 0) {
+        return -1;
+      }
+      if(parent[curpos] == start) {
+        return curpos; //This was the next to last 
+      }
+      curpos = parent[curpos];
+    }
+    return -1;
+  }
+
+  int Algorithm::distance(int start, int destination) {
+    vector<int> parent(situation->mission.positions, -1);
+    queue<int> q;
+    q.push(start);
+    parent[start] = -3;
+    while(!q.empty()) {
+      int pos = q.front();
+      q.pop();
+      for(int neighbor : situation->mission.adjPos(pos)) {
+        if(occupied(neighbor))  {
+          parent[neighbor] = -2;
+        }
+        if(parent[neighbor] == -1) {
+          q.push(neighbor);
+          parent[neighbor] = pos;
+        }
+      }
+    }
+
+    int curpos = destination;
+    int distance = 0;
+    while(curpos != start) {
+      distance++;
+      if(curpos < 0) {
+        return -1;
+      }
+      curpos = parent[curpos];
+    }
+    return distance;
   }
 
   // Try to move somewhere and be out of the way. To be called for robots that have nothing to do

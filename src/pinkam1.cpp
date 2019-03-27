@@ -15,14 +15,17 @@ namespace algorithm {
     state::State &state = situation->state;
 
     for(state::robot &r : state.robots) {
+      cout << "new robot" << endl;
       //first case, we are carrying an item!
       if(r.item != -1) {
         bool foundStation = false;
         for(int s : mission.adjStations(r.pos)) {
           if(s == r.fixedStation) { //This is my station! Pinkam1 only delivers to the station with the same id
+            cout << r.item << " " << s << endl;
             foundStation = true;
             deliverItem(r.item, s);
             r.item = -1;
+            continue;
           }
         }
         if(foundStation) {
@@ -49,6 +52,7 @@ namespace algorithm {
           if(i == r.assignedItem) {
             foundShelf = true;
             r.item = r.assignedItem;
+            cout << r.fixedStation << " was assigned " << i << endl;
           }
         }
         if(foundShelf) {
@@ -70,15 +74,20 @@ namespace algorithm {
     state::station s = state.stations[r.fixedStation];
     // If this station has no order assigned, this robot is out of work
     if(s.order == -1) {
+      cout << "Robot paired with station " << r.fixedStation << "no order!" << endl;
+      r.assignedItem = -1;
       return false;
     }
+    cout << "Robot paired with station " << r.fixedStation << "has order " << s.order << endl;
     for(int i = 0; i < int(mission.orders[s.order].items.size()); i++) {
       // If this item is still needed, and no other robot is fetching it
       if(!s.fulfilled[i] && s.assignedTo[i] == -1) {
         r.assignedItem = mission.orders[s.order].items[i];
+        cout << "Robot paired with station " << r.fixedStation << " was assigned item " << r.assignedItem << endl;
         return true;
       }
     }
+    r.assignedItem = -1;
     return false; // All remaining items for this station was already assigned (should't really happpen in pinkam1)
   }
 

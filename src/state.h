@@ -27,6 +27,7 @@ namespace state {
   public:
     vector<robot> robots;
     vector<station> stations;
+    int nextOrder = 0;
 
     State();
     State(mission::Mission);
