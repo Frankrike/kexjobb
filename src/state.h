@@ -35,6 +35,7 @@ namespace state {
     State(string str); // read from string
 
     unsigned int encode(mission::Mission);
+    unsigned int maxEncoding(mission::Mission mission);
     string toString();
   };
 }
