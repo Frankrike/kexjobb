@@ -31,11 +31,11 @@ int main(int argc, char* argv[])
   while(!situation.missionCompleted() && turn++ < 1000) {
     algorithm->makeMove();
     gui.addState(situation.state);
-    cout << situation.state.maxEncoding(situation.mission) << endl;
     cout << "--------------\nturn: " << turn
-        << " state: " << situation.state.encode(situation.mission)
+        << " encoded: " << situation.state.encode(situation.mission)
         << endl << situation.debugView() << endl;
   }
+
   gui.show();
   
 }

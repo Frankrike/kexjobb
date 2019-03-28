@@ -5,6 +5,8 @@
 #include <set>
 #include <cassert>
 #include <functional>
+#include <vector>
+#include <queue>
 
 using namespace std;
 
@@ -13,35 +15,77 @@ namespace algorithm {
 
   
   Exhaustive::Exhaustive(Situation* s) : Algorithm(s) {
-    //calculate();
-    states.resize(1000);
-    state::State state = s->state;
-    for(int i = 0; i < int(states.size()); i++) {
-      states[i] = state;
-      auto nStates = nextStates(state);
-      state = nStates[rand()%nStates.size()];
-    }
-    s->state = states[0];
+    calculate();
   }
 
   void Exhaustive::calculate() {
-    states = nextStates(situation->state);
+    state::State state = situation->state;
+    mission::Mission mission = situation->mission;
+    int n = state.maxEncoding(mission);
+    cout << "Starting total search. Max " << n << " states." << endl;
+
+    vector<int> par(n, -1);
+    queue<int> q;
+
+    auto add = [&](int u, int p) {
+      if (par[u] != -1)
+        return;
+      par[u] = p;
+      q.push(u);
+    };
+    int start = state.encode(mission), goal = -1, steps = 0;
+    add(start, -2);
+
+    while(!q.empty()) {
+      int u = q.front(); q.pop();
+      state::State curState = state::State(u, mission);
+
+      situation->state = curState;
+      if (situation->missionCompleted()) {
+        goal = u;
+        break;
+      }
+
+      steps ++;
+      if (steps%1000 == 0) {
+        cout << "At: " << u << ", step " << steps << endl;
+        cout << nextStates(curState).size() << " adjacent. " << endl;
+        situation->state = curState;
+        cout <<  situation->debugView() << endl;
+      }
+
+      for (int v : nextStates(curState))
+        add(v, u);
+    }
+    cout << "Finished. Start: " << start << ", goal: " << goal << endl;
+
+    if (goal == -1) {
+      cout << "Failed to find solution." << endl;
+      return;
+    }
+
+    int cur = goal;
+    while(cur != -2) {
+      cout << "Backtracking at " << cur << endl;
+      states.insert(states.begin(), state::State (cur, mission));
+      cur = par[cur];
+    }
     situation->state = states[0];
   }
 
   void Exhaustive::makeMove() {
-    if(curState + 1 < int(states.size()))
-      situation->state = states[++curState];
+    if(++curState < int(states.size()))
+      situation->state = states[curState];
   }
 
-  // All possible states that can come after state
-  vector<state::State> Exhaustive::nextStates(state::State state) {
+  // All possible states that can come after state, encoded
+  vector<int> Exhaustive::nextStates(state::State state) {
     mission::Mission &mission = situation->mission;
-    vector<state::State> states;
+    vector<int> states;
 
     function<void(state::State, int)> recursive = [&](state::State s, int rId){
       if (rId == int(state.robots.size())) {
-        states.push_back(s);
+        states.push_back(s.encode(mission));
         return;
       }
       state::robot r = s.robots[rId];

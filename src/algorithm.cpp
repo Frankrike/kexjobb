@@ -76,7 +76,7 @@ namespace algorithm {
     for(int i = 0; i < int(order.items.size()); i++)
       if (!station.fulfilled[i] && order.items[i] == item) {
         station.fulfilled[i] = true;
-        station.assignedTo[i] = -1;
+        //station.assignedTo[i] = -1; // sorry Lisa
         item = -1;
         break;
       }
@@ -87,11 +87,17 @@ namespace algorithm {
       stationFull &= b;
 
     if (stationFull) { // updateOrder
-      int nextOrder = state.nextOrder;
+      int highestOrder = -1;
+      for(state::station station : state.stations) {
+        int orderHere = station.order;
+        if (orderHere == -1)
+          orderHere = mission.orders.size();
+        highestOrder = max(highestOrder, orderHere);
+      }
 
-      if (nextOrder == int(mission.orders.size()))
+      int nextOrder = highestOrder + 1;
+      if (nextOrder >= int(mission.orders.size()))
         nextOrder = -1;
-      else state.nextOrder++;
 
       station.order = nextOrder;
       if (station.order != -1) {

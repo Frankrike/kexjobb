@@ -10,8 +10,8 @@ using namespace std;
 namespace state {
   struct robot {
     int pos; // use the corresponding mission to convert to coordinates
-    int item; // held item, -1 if none
-    int assignedItem; // -1 if none
+    int item = -1; // held item, -1 if none
+    int assignedItem = -1; // -1 if none
     int fixedStation; // used for pinkam1
   };
 
@@ -27,7 +27,6 @@ namespace state {
   public:
     vector<robot> robots;
     vector<station> stations;
-    int nextOrder = 0;
 
     State();
     State(mission::Mission);
