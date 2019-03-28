@@ -12,7 +12,6 @@ public:
   state::State state;
 
   bool missionCompleted();
-
   string debugView();
 };
 

@@ -16,7 +16,7 @@ protected:
   int distance(int start, int destination);
 public:
   Algorithm(Situation* s);  
-  void makeMove();
+  virtual void makeMove();
 };
 
 }

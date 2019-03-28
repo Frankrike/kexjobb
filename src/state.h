@@ -31,10 +31,10 @@ namespace state {
 
     State();
     State(mission::Mission);
-    State(unsigned int encoded); // decode from int
+    State(unsigned int, mission::Mission); // decode from int
     State(string str); // read from string
 
-    unsigned int encode();
+    unsigned int encode(mission::Mission);
     string toString();
   };
 }

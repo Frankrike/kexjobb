@@ -108,3 +108,4 @@ bool Situation::missionCompleted(){
     completed &= s.order == -1;
   return completed;
 }
+

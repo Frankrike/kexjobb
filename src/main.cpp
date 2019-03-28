@@ -4,6 +4,7 @@
 #include "situation.h"
 #include "algorithm.h"
 #include "pinkam1.h"
+#include "exhaustive.h"
 #include "gui.h"
 using namespace std;
 
@@ -18,17 +19,19 @@ int main(int argc, char* argv[])
   }
   situation.mission = mission::Mission(missionString);
   situation.state = state::State(situation.mission);
-  algorithm::Pinkam1 algorithm(&situation);
+  algorithm::Algorithm* algorithm;
+
+  algorithm = new algorithm::Exhaustive(&situation);
 
   GUI gui(situation.mission);
   gui.addState(situation.state);
 
   cout << situation.debugView() << endl;
   int turn = 0;
-  while(!situation.missionCompleted() && turn < 1000000) {
-    algorithm.makeMove();
+  while(!situation.missionCompleted() && turn++ < 1000) {
+    algorithm->makeMove();
     gui.addState(situation.state);
-    cout << "--------------\nturn: " << ++turn << endl << situation.debugView() << endl;
+    cout << "--------------\nturn: " << turn << endl << situation.debugView() << endl;
   }
   gui.show();
   

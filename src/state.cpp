@@ -21,4 +21,20 @@ namespace state {
         }
     }
   }
+
+  unsigned int put(unsigned int i, int value, int range){
+    return i*range + value;
+  }
+
+  pair<unsigned int, int> get(unsigned int i, int range) {
+    return {i/range, i%range};
+  }
+
+  State::State(unsigned int encoded, mission::Mission mission){
+
+  }
+
+  unsigned int State::encode(mission::Mission mission) {
+    return 0;
+  }
 }
