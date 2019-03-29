@@ -76,7 +76,6 @@ namespace algorithm {
     for(int i = 0; i < int(order.items.size()); i++)
       if (!station.fulfilled[i] && order.items[i] == item) {
         station.fulfilled[i] = true;
-        //station.assignedTo[i] = -1; // sorry Lisa
         item = -1;
         break;
       }
@@ -103,7 +102,6 @@ namespace algorithm {
       if (station.order != -1) {
         station.fulfilled.assign(
             mission.orders[station.order].items.size(), false);
-        station.assignedTo.assign(mission.orders[station.order].items.size(), -1);
       }
     }
   }

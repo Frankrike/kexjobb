@@ -87,7 +87,7 @@ string Situation::debugView(){
     s << "Robot " << i << ": pos=" << robot.pos 
         << "{" << coors.first << "," <<  coors.second << "}"
         << " item=" << (robot.item == -1 ? '_' : char('a' + robot.item))
-        << " assignedItem=" << (robot.assignedItem == -1 ? '_' : char('a' + robot.assignedItem))
+        // :( << " assignedItem=" << (robot.assignedItem == -1 ? '_' : char('a' + robot.assignedItem))
         << endl;
   }
 

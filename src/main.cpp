@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     algorithm->makeMove();
     gui.addState(situation.state);
     cout << "--------------\nturn: " << turn
-        << " encoded: " << situation.state.encode(situation.mission)
+        //<< " encoded: " << situation.state.encode(situation.mission)
         << endl << situation.debugView() << endl;
   }
 
