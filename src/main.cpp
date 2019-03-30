@@ -5,6 +5,7 @@
 #include "algorithm.h"
 #include "pinkam1.h"
 #include "pinkam2.h"
+#include "vhs.h"
 #include "exhaustive.h"
 #include "gui.h"
 using namespace std;
@@ -22,7 +23,7 @@ int main(int argc, char* argv[])
   situation.state = state::State(situation.mission);
   algorithm::Algorithm* algorithm;
 
-  algorithm = new algorithm::Pinkam1(&situation);
+  algorithm = new algorithm::Vhs(&situation);
 
   GUI gui(situation.mission);
   gui.addState(situation.state);
