@@ -29,16 +29,13 @@ namespace algorithm {
     state::State &state = situation->state;
 
     for(int id = 0; id < int(state.robots.size()); id++) {
-      cout << id << " is assigned " << assignedItem[id] << endl;
       state::robot& r = state.robots[id];
       //first case, we are carrying an item!
       if(r.item != -1) {
         bool foundStation = false;
         for(int s : mission.adjStations(r.pos)) {
           if(s == id) { //This is my station! Pinkam1 only delivers to the station with the same id
-            cout << r.item << " " << s << endl;
             foundStation = true;
-            cout << "Delivering for id " << id << " and station " << s << endl;
             deliverItem(r.item, s);
             assignedTo[s][r.item] = -1;
             r.item = -1;
@@ -71,13 +68,10 @@ namespace algorithm {
           if(i == assignedItem[id]) {
             foundShelf = true;
             r.item = assignedItem[id];
-            cout << id << " was assigned " << i << endl;
           }
         }
-        if(foundShelf) {
-          // Do nothing, we spent this round picking up the item
-        }
-        else {
+        // If we didn't pick something up, we can move instead
+        if(!foundShelf) {
           moveTowards(r, mission.items[assignedItem[id]].shelfCoors);
         }
 
@@ -87,24 +81,20 @@ namespace algorithm {
   }
 
   // Assign a new item to this robot. Returns false if no new item could be assigned.
-  // Since this is Pinkam1, it can only pick an item from it's paired station
-  // 
+  // Since this is non collaborative Pinkam, it can only pick an item from its paired station
   bool Pinkam1::assignItem(state::robot &r, int id) {
-    cout << "Trying to assign" << endl;
     mission::Mission &mission = situation->mission;
     state::State &state = situation->state;
     state::station s = state.stations[id];
+
     // If this station has no order assigned, this robot is out of work
     if(s.order == -1) {
-      cout << "Robot paired with station " << id << "no order!" << endl;
       assignedItem[id] = -1;
       return false;
     }
-    cout << "Robot paired with station " << id << "has order " << s.order << endl;
 
     int bestDistance = 1e9;
     int chosenItem = -1;
-
     // Of all the available items at this station, calculate which one is closest to reach
     for(int i = 0; i < int(mission.orders[s.order].items.size()); i++) {
       if(!s.fulfilled[i]) {
@@ -124,14 +114,12 @@ namespace algorithm {
       assignedItem[id] = chosenItem;
       return true;
     }
+    // All remaining items for this station was already assigned
     else {
-      cout << "failed assigning" << endl;
+      assert(false); // This should never happen in pinkam1
       assignedItem[id] = -1;
-      return false; // All remaining items for this station was already assigned (should't really happpen in pinkam1)
+      return false; 
 
     }
   }
-
-  
-
 }

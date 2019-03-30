@@ -97,7 +97,6 @@ namespace algorithm {
       int nextOrder = highestOrder + 1;
       if (nextOrder >= int(mission.orders.size()))
         nextOrder = -1;
-      cout << "nextorder " << nextOrder << endl;
       station.order = nextOrder;
       if (station.order != -1) {
         station.fulfilled.assign(
@@ -193,7 +192,13 @@ namespace algorithm {
 
   // Try to move somewhere and be out of the way. To be called for robots that have nothing to do
   void Algorithm::moveAround(state::robot &r) {
-    moveTowards(r, make_pair(0, 0));
+    mission::Mission &mission = situation->mission;
+    vector<int> adj = mission.adjPos(r.pos);
+    if (adj.size() != 0) {
+      int pos = adj[rand()%adj.size()];
+      if (!occupied(pos))
+        r.pos = pos;
+    }
   }
 
   bool Algorithm::occupied(int pos) {
