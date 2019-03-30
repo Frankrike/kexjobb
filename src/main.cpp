@@ -38,6 +38,8 @@ int main(int argc, char* argv[])
         << endl << situation.debugView() << endl;
   }
 
+  cout << situation.mission.toString() << endl;
+
   gui.show();
   
 }
