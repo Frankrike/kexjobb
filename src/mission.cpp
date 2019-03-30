@@ -192,5 +192,35 @@ namespace mission {
 
     return result;
   }
+
+  string Mission::toString(){
+    stringstream s;
+
+    s << width << " " << height << endl;
+    for (string line : walls)
+      s << line << endl;
+
+    s << items.size() << endl;
+    for (item i : items)
+      s << i.shelfCoors.first << " " << i.shelfCoors.second << endl;
+
+    s << stations.size() << endl;
+    for (station i : stations)
+      s << i.coors.first << " " << i.coors.second << endl;
+
+    s << robots.size() << endl;
+    for (robot r : robots)
+      s << toCoors(r.startPos).first << " " << toCoors(r.startPos).second << endl;
+
+    s << orders.size() << endl;
+    for (order o : orders) {
+      s << o.items.size();
+      for (int i : o.items)
+        s << " " << i;
+      s << endl;
+    }
+
+    return s.str();
+  }
 }
 
