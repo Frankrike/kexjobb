@@ -5,7 +5,7 @@ OUT_GEN = missiongen.out
 CC = g++ -std=c++11
 FLAGS = -Wall
 
-_OBJS = main.o mission.o state.o situation.o algorithm.o pinkam1.o gui.o exhaustive.o
+_OBJS = main.o mission.o state.o situation.o algorithm.o pinkam1.o gui.o exhaustive.o vhs.o
 OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
 
 _OBJS_GEN = mission.o missiongen.o
