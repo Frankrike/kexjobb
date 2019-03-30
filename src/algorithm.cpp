@@ -97,7 +97,7 @@ namespace algorithm {
       int nextOrder = highestOrder + 1;
       if (nextOrder >= int(mission.orders.size()))
         nextOrder = -1;
-
+      cout << "nextorder " << nextOrder << endl;
       station.order = nextOrder;
       if (station.order != -1) {
         station.fulfilled.assign(
@@ -107,7 +107,6 @@ namespace algorithm {
   }
 
   void Algorithm::moveTowards(state::robot &r, pair<int, int> coors) {
-    // move randomly
     mission::Mission &mission = situation->mission;
     vector<int> goalPositions = mission.adjPos(coors);
     

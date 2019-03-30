@@ -38,18 +38,19 @@ namespace algorithm {
           if(s == id) { //This is my station! Pinkam1 only delivers to the station with the same id
             cout << r.item << " " << s << endl;
             foundStation = true;
+            cout << "Delivering for id " << id << " and station " << s << endl;
             deliverItem(r.item, s);
             assignedTo[s][r.item] = -1;
             r.item = -1;
             assignedItem[id] = -1;
-
             break;
           }
         }
         if(r.item == -1) {
           // Pick a new item to deliver to my station
-          assignItem(id);
+          assignItem(r, id);
         }
+        // Only move if we didn't deliver anything
         else {
           moveTowards(r, mission.stations[id].coors);
         }
@@ -58,7 +59,7 @@ namespace algorithm {
       else {
         if(assignedItem[id] == -1) {
           // Try to assign a new item, if this doesn't work, just try to stay out of the way
-          if(!assignItem(id)) {
+          if(!assignItem(r, id)) {
             moveAround(r);
             continue;
           }
@@ -74,7 +75,7 @@ namespace algorithm {
           }
         }
         if(foundShelf) {
-          moveTowards(r, mission.stations[id].coors);
+          // Do nothing, we spent this round picking up the item
         }
         else {
           moveTowards(r, mission.items[assignedItem[id]].shelfCoors);
@@ -86,7 +87,9 @@ namespace algorithm {
   }
 
   // Assign a new item to this robot. Returns false if no new item could be assigned.
-  bool Pinkam1::assignItem(int id) {
+  // Since this is Pinkam1, it can only pick an item from it's paired station
+  // 
+  bool Pinkam1::assignItem(state::robot &r, int id) {
     cout << "Trying to assign" << endl;
     mission::Mission &mission = situation->mission;
     state::State &state = situation->state;
@@ -98,17 +101,35 @@ namespace algorithm {
       return false;
     }
     cout << "Robot paired with station " << id << "has order " << s.order << endl;
+
+    int bestDistance = 1e9;
+    int chosenItem = -1;
+
+    // Of all the available items at this station, calculate which one is closest to reach
     for(int i = 0; i < int(mission.orders[s.order].items.size()); i++) {
-      // If this item is still needed, and no other robot is fetching it
       if(!s.fulfilled[i]) {
-        assignedItem[id] = mission.orders[s.order].items[i];
-        cout << "Robot paired with station " << id << " was assigned item " << assignedItem[id] << endl;
-        return true;
+        int itemId = mission.orders[s.order].items[i];
+        // Their might be up to 4 adjacent squares to the shelf
+        vector<int> adj = mission.adjPos(mission.items[itemId].shelfCoors);
+        for(int pos : adj) {
+          int dist = distance(r.pos, pos);
+          if(dist < bestDistance) {
+            bestDistance = dist;
+            chosenItem = itemId;
+          }
+        }        
       }
     }
-    cout << "failed assigning" << endl;
-    assignedItem[id] = -1;
-    return false; // All remaining items for this station was already assigned (should't really happpen in pinkam1)
+    if(chosenItem != -1) {
+      assignedItem[id] = chosenItem;
+      return true;
+    }
+    else {
+      cout << "failed assigning" << endl;
+      assignedItem[id] = -1;
+      return false; // All remaining items for this station was already assigned (should't really happpen in pinkam1)
+
+    }
   }
 
   

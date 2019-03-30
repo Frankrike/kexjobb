@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
   situation.state = state::State(situation.mission);
   algorithm::Algorithm* algorithm;
 
-  algorithm = new algorithm::Exhaustive(&situation);
+  algorithm = new algorithm::Pinkam1(&situation);
 
   GUI gui(situation.mission);
   gui.addState(situation.state);
