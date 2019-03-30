@@ -4,6 +4,7 @@
 #include "situation.h"
 #include "algorithm.h"
 #include "pinkam1.h"
+#include "pinkam2.h"
 #include "exhaustive.h"
 #include "gui.h"
 using namespace std;
