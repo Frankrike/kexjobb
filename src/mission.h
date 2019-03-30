@@ -32,7 +32,6 @@ namespace mission {
     vector<vector<int> > coorsToPos;    // toPos quickly
     vector<vector<int> > adjPosV, adjStationsV, adjItemsV;
     bool precalculated = false;
-    void precalculate();
   public:
     vector<string> walls; // '#' if not walkable, ' ' if walkable. If occupied
                           // by a station, it's also '#'
@@ -57,6 +56,7 @@ namespace mission {
     vector<int> adjItems(int pos);    // items one step from pos
 
     vector<int> adjPos(pair<int, int> coors); // positions one step from coordinates. Used when navigating to shelves or stations
+    void precalculate();
   };
 }
 

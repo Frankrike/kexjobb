@@ -197,8 +197,12 @@ namespace mission {
     stringstream s;
 
     s << width << " " << height << endl;
-    for (string line : walls)
-      s << line << endl;
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++)
+        s << walls[x][y];
+      s << endl;
+    }
 
     s << items.size() << endl;
     for (item i : items)
