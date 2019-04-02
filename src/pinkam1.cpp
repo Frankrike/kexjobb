@@ -14,12 +14,9 @@ namespace algorithm {
     state::State &state = situation->state;
     mission::Mission &mission = situation->mission;
     assignedItem.assign(state.robots.size(), -1);
-    assignedTo.resize(state.stations.size());
     for(int i = 0; i < int(state.stations.size()); i++) {
         state.stations[i].order = i < int(mission.orders.size()) ? i : -1;
-        if (state.stations[i].order != -1) {
-          assignedTo[i].push_back(-1);
-        }
+
     }
   }
 
@@ -37,7 +34,7 @@ namespace algorithm {
           if(s == id) { //This is my station! Pinkam1 only delivers to the station with the same id
             foundStation = true;
             deliverItem(r.item, s);
-            assignedTo[s][r.item] = -1;
+            
             r.item = -1;
             assignedItem[id] = -1;
             break;

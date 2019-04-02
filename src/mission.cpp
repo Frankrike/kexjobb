@@ -187,7 +187,7 @@ namespace mission {
     newPos = toPos(make_pair(coors.first, coors.second+1));
     if(newPos >= 0) result.push_back(newPos);
 
-    newPos = toPos(make_pair(coors.first-1, coors.second));
+    newPos = toPos(make_pair(coors.first, coors.second-1));
     if(newPos >= 0) result.push_back(newPos);
 
     return result;
