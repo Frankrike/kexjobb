@@ -122,14 +122,22 @@ int main(int argc, char** argv) {
       used.insert(coors);
       startCoors[i] = coors;
     }
-  } else if (mode == "shelves") {
+  } else if (mode == "shelves" || mode == "shelves2") {
 
     if (marginStations == -1)
       marginStations = margin;
 
     int shelfTotLength = shelfLength + 2;
-    width = shelvesX*(shelfTotLength + margin) + marginStations + 1;
-    height = max(stations, max(robots, margin + shelvesY*(2 + margin)));
+
+    if (mode == "shelves") {
+      width = shelvesX*(shelfTotLength + margin) + marginStations + 1;
+      height = max(stations, max(robots, margin + shelvesY*(2 + margin)));
+    } else {
+      width = 2 + shelvesX*shelfTotLength + (shelvesX-1)*margin + 2*marginStations;
+      height = 2 + shelvesY*2 + (shelvesY-1)*margin + 2*marginStations;
+      width = max(max(stations, robots)/4+3, width);
+      height = max(max(stations, robots)/4+3, height);
+    }
     items = shelfLength * 2 * shelvesX * shelvesY;
 
     mission.items.resize(items);
@@ -138,21 +146,32 @@ int main(int argc, char** argv) {
     mission.walls = vector<string>(width, string(height, '.'));
 
     for (int s = 0; s < stations; s++) {
-      int x = 0, y = (height-stations)/2 + s;
+      int x, y;
+      if (s&1)
+        y = (height-(stations+3)/4)/2 + s/4, x = (width-1)*((s%4)/2);
+      else 
+        x = (width-(stations+3)/4)/2 + s/4, y = (height-1)*((s%4)/2);
       mission.stations[s].coors = {x, y};
     }
     for (int r = 0; r < robots; r++) {
-      int x = 1, y = (height-robots)/2 + r;
+      int x, y;
+      if (r&1)
+        y = (height-(robots+3)/4)/2 + r/4, x = 1+(width-3)*((r%4)/2);
+      else 
+        x = (width-(robots+3)/4)/2 + r/4, y = 1+(height-3)*((r%4)/2);
       startCoors[r] = {x, y};
     }
 
-    int shelvesStartX = 1 + marginStations; 
+    int shelvesStartX =  1 + marginStations, shelvesStartY = margin;
+    if (mode == "shelves2")
+      shelvesStartY = 1 + marginStations;
+
 
     int itemId = 0;
     for (int sx = 0; sx < shelvesX; sx ++)
       for (int sy = 0; sy < shelvesY; sy ++) {
         int x1 = shelvesStartX + sx*(shelfTotLength + margin);
-        int y1 = margin + sy*(2 + margin);
+        int y1 = shelvesStartY + sy*(2 + margin);
         mission.walls[x1][y1] = mission.walls[x1][y1+1]
             = mission.walls[x1+shelfLength+1][y1]
             = mission.walls[x1+shelfLength+1][y1+1]
