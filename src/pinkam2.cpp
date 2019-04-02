@@ -42,8 +42,8 @@ namespace algorithm {
         for(int s : mission.adjStations(r.pos)) {
           if(s == assignedItem[id].station) {
             foundStation = true;
-            deliverItem(r.item, s);
-            assignedTo[s][assignedItem[id].itemPosInOrder] = -1;
+            assignedTo[s][assignedItem[id].itemPosInOrder] = -1; // Must be before deliverItem
+            deliverItem(assignedItem[id].itemPosInOrder, s);
             r.item = -1;
             assignedItem[id].item = -1;
             assignedItem[id].station = -1;
@@ -98,20 +98,15 @@ namespace algorithm {
     int chosenItemPosInOrder = -1;
     for(int stationId = 0; stationId < int(state.stations.size()); stationId++) {
       state::station s = state.stations[stationId];
-      cout << "Station: " << stationId << " has order " << s.order << endl;
       if(s.order == -1) continue;
       // Of all the available items at this station, calculate which one is closest to reach
       for(int i = 0; i < int(mission.orders[s.order].items.size()); i++) {
-        cout << assignedTo[stationId].size() << endl;
-        cout << i << " " << s.fulfilled[i] << " " << assignedTo[stationId][i] << endl;
         if(!s.fulfilled[i] && assignedTo[stationId][i] == -1) {
-          cout << "passed if statement" << endl;
           int itemId = mission.orders[s.order].items[i];
           // Their might be up to 4 adjacent squares to the shelf
           vector<int> adj = mission.adjPos(mission.items[itemId].shelfCoors);
           for(int pos : adj) {
             int dist = distance(r.pos, pos);
-            cout << "dist is " << dist << endl;
             if(dist < bestDistance) {
               bestDistance = dist;
               chosenItem = itemId;
@@ -139,7 +134,7 @@ namespace algorithm {
     }
   }
 
-  void Pinkam2::deliverItem(int item, int s){
+  void Pinkam2::deliverItem(int itemPosInOrder, int s){
     mission::Mission &mission = situation->mission;
     state::State &state = situation->state;
 
@@ -147,13 +142,8 @@ namespace algorithm {
     assert(station.order != -1);
     mission::order order = mission.orders[station.order];
 
-    for(int i = 0; i < int(order.items.size()); i++)
-      if (!station.fulfilled[i] && order.items[i] == item) {
-        station.fulfilled[i] = true;
-        item = -1;
-        break;
-      }
-    assert(item == -1);
+    assert(station.fulfilled[itemPosInOrder] == false);
+    station.fulfilled[itemPosInOrder] = true;
 
     bool stationFull = true;
     for (bool b : station.fulfilled)

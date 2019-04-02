@@ -46,8 +46,8 @@ namespace algorithm {
         for(int s : mission.adjStations(r.pos)) {
           if(s == assignedItem[id].station) {
             foundStation = true;
-            deliverItem(r.item, s);
-            assignedTo[s][assignedItem[id].itemPosInOrder] = -1;
+            assignedTo[s][assignedItem[id].itemPosInOrder] = -1; // Must be before delivery
+            deliverItem(assignedItem[id].itemPosInOrder, s);            
             r.item = -1;
             assignedItem[id].item = -1;
             assignedItem[id].station = -1;
@@ -68,18 +68,15 @@ namespace algorithm {
         }
         //inv: r has an assigned item
         bool foundShelf = false;
-        cout << "oop" << endl;
         // See if any of the shelves we're near has this item
         for(int i : mission.adjItems(r.pos)) {
           if(i == assignedItem[id].item) {
-            cout << "foundshelf" << endl;
             foundShelf = true;
             r.item = assignedItem[id].item;
           }
         }
         // If we didn't pick something up, we can move instead
         if(!foundShelf) {
-          cout << "moving towards item" << assignedItem[id].item << endl;
           moveTowards(r, mission.items[assignedItem[id].item].shelfCoors);
         }
 
@@ -87,7 +84,7 @@ namespace algorithm {
     }
   }
 
-  void Vhs::deliverItem(int item, int s){
+  void Vhs::deliverItem(int itemPosInOrder, int s){
     mission::Mission &mission = situation->mission;
     state::State &state = situation->state;
 
@@ -95,13 +92,8 @@ namespace algorithm {
     assert(station.order != -1);
     mission::order order = mission.orders[station.order];
 
-    for(int i = 0; i < int(order.items.size()); i++)
-      if (!station.fulfilled[i] && order.items[i] == item) {
-        station.fulfilled[i] = true;
-        item = -1;
-        break;
-      }
-    assert(item == -1);
+    assert(station.fulfilled[itemPosInOrder] == false);
+    station.fulfilled[itemPosInOrder] = true;
 
     bool stationFull = true;
     for (bool b : station.fulfilled)
@@ -136,7 +128,9 @@ namespace algorithm {
    for(int i = 0; i < assignedTo.size(); i++) {
      for(int j = 0; j < assignedTo[i].size(); j++) {
        // Leave it if a robot already carries this item
-       if(state.robots[assignedTo[i][j]].item == -1) assignedTo[i][j] = -1;
+       if(assignedTo[i][j] != -1) {
+        if(state.robots[assignedTo[i][j]].item == -1) assignedTo[i][j] = -1;
+       }
      }
    }
    assignment empty;
@@ -157,14 +151,15 @@ namespace algorithm {
       }
       for(int stationId = 0; stationId < int(state.stations.size()); stationId++) {
         state::station s = state.stations[stationId];
-        cout << "Station: " << stationId << " has order " << s.order << endl;
         if(s.order == -1) continue;
         // Of all the available items at this station, calculate which one is closest to reach
         for(int i = 0; i < int(mission.orders[s.order].items.size()); i++) {
           if(s.fulfilled[i])  continue;
+          
           // Inv: We now have a robot that is not carrying an item, and a station that needs an item
 
           int itemId = mission.orders[s.order].items[i];
+
           vector<int> adj = mission.adjPos(mission.items[itemId].shelfCoors);
           int bestDistance = 1e9;
           for(int pos : adj) {
@@ -184,9 +179,7 @@ namespace algorithm {
     }
 
     while(!q.empty()) {
-      cout <<" queue" << endl;
       pairing p = q.top();
-      cout << p.dist << endl;
       q.pop();
       // Someone already got this item order
       if(assignedTo[p.station][p.itemPosInOrder] != -1) continue;
@@ -199,7 +192,7 @@ namespace algorithm {
       a.item = p.item;
       a.itemPosInOrder = p.itemPosInOrder;
       a.station = p.station;
-      assignedItem[p.robotId] = a;
+      assignedItem[p.robotId] = a;  
     }
   }
 }
