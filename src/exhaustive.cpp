@@ -22,7 +22,7 @@ namespace algorithm {
     state::State state = situation->state;
     mission::Mission mission = situation->mission;
     int n = state.maxEncoding(mission);
-    cout << "Starting total search. Max " << n << " states." << endl;
+    cerr << "Starting total search. Max " << n << " states." << endl;
 
     vector<int> par(n, -1);
     queue<int> q;
@@ -48,25 +48,25 @@ namespace algorithm {
 
       steps ++;
       if (steps%1000 == 0) {
-        cout << "At: " << u << ", step " << steps << endl;
-        cout << nextStates(curState).size() << " adjacent. " << endl;
+        cerr << "At: " << u << ", step " << steps << endl;
+        cerr << nextStates(curState).size() << " adjacent. " << endl;
         situation->state = curState;
-        cout <<  situation->debugView() << endl;
+        cerr <<  situation->debugView() << endl;
       }
 
       for (int v : nextStates(curState))
         add(v, u);
     }
-    cout << "Finished. Start: " << start << ", goal: " << goal << endl;
+    cerr << "Finished. Start: " << start << ", goal: " << goal << endl;
 
     if (goal == -1) {
-      cout << "Failed to find solution." << endl;
+      cerr << "Failed to find solution." << endl;
       return;
     }
 
     int cur = goal;
     while(cur != -2) {
-      cout << "Backtracking at " << cur << endl;
+      cerr << "Backtracking at " << cur << endl;
       states.insert(states.begin(), state::State (cur, mission));
       cur = par[cur];
     }
