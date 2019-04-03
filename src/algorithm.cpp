@@ -207,4 +207,8 @@ namespace algorithm {
         return true;
     return false;
   }
+
+  string Algorithm::name() {
+    return "random";
+  }
 }

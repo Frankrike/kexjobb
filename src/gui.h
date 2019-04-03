@@ -9,9 +9,11 @@ class GUI {
 private:
   vector<state::State> states;
   mission::Mission mission;
+  string name = "";
 public:
   GUI(mission::Mission mission);
   void addState(state::State state);
+  void setName(string name);
   void show();
 };
 

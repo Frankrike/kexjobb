@@ -9,6 +9,7 @@ class Exhaustive : public Algorithm {
 public:
   void makeMove();
   Exhaustive(Situation* s);
+  string name();
 private:
   vector<state::State> states;
   int curState = 0;

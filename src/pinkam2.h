@@ -17,6 +17,7 @@ class Pinkam2 : public Algorithm {
 public:
   void makeMove();
   Pinkam2(Situation* s);
+  string name();
 private:
   bool assignItem(state::robot &r, int id); // Assigns a new item to robot with the given id
   void deliverItem(int item, int station);

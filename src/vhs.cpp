@@ -195,6 +195,10 @@ namespace algorithm {
       assignedItem[p.robotId] = a;  
     }
   }
+
+  string Vhs::name() {
+    return "vhs";
+  }
 }
   
 

@@ -17,6 +17,7 @@ protected:
 public:
   Algorithm(Situation* s);  
   virtual void makeMove();
+  virtual string name();
 };
 
 }

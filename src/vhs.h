@@ -23,6 +23,7 @@ class Vhs : public Algorithm {
 public:
   void makeMove();
   Vhs(Situation* s);
+  string name();
 private:
   //bool assignItem(state::robot &r, int id); // Assigns a new item to robot with the given id
   void assignAll();

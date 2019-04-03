@@ -118,4 +118,8 @@ namespace algorithm {
 
     }
   }
+
+  string Pinkam1::name() {
+    return "pinkam1";
+  }
 }

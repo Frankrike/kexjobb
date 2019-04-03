@@ -174,4 +174,7 @@ namespace algorithm {
     }
   }
 
+  string Pinkam2::name() {
+    return "pinkam2";
+  }
 }

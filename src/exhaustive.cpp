@@ -135,4 +135,8 @@ namespace algorithm {
     recursive(state, 0);
     return states;
   }
+
+  string Exhaustive::name() {
+    return "exhaustive";
+  }
 }

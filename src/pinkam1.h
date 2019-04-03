@@ -15,6 +15,7 @@ class Pinkam1 : public Algorithm {
 public:
   void makeMove();
   Pinkam1(Situation* s);
+  string name();
 private:
   bool assignItem(state::robot &r, int id); // Assigns a new item to robot with the given id
   vector<int> assignedItem;

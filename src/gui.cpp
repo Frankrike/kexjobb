@@ -16,6 +16,11 @@ void GUI::addState(state::State state) {
 }
 
 
+void GUI::setName(string name) {
+  this->name = name;
+}
+
+
 int width = 800, height = 600;
 float sw; //width of one square on screen
 sf::Vector2f mTopRight;
@@ -194,6 +199,7 @@ void GUI::show() {
       drawButton(w/2, to_string((int)(speed*100)), false);
       if (drawButton(w/3, "-"))
         speed /= 2;
+      drawButton(w*2, "Algorithm: " + name, false);
     }
 
     for (int x = 0; x < mission.width; x++)
