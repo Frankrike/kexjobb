@@ -81,7 +81,7 @@ smallShelfCases = [
 ]
 
 smallShelfRingCases = [
-  Testcase("shelves_small{}".format(i), './missiongen.out seed={} mode=shelves2 shelvesX=1 shelvesY=1 shelfLength=2 margin=1 marginStations=1 robots=2 stations=2 orders=3 ordersize=3'.format(i))
+  Testcase("shelves_small_ring{}".format(i), './missiongen.out seed={} mode=shelves2 shelvesX=1 shelvesY=1 shelfLength=2 margin=1 marginStations=1 robots=2 stations=2 orders=3 ordersize=3'.format(i))
   for i in range(NUMSMALLCASES)
 ]
 
