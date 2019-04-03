@@ -4,15 +4,14 @@
 #include "algorithm.h"
 
 namespace algorithm {
+
   struct assignment {
     int item;
     int itemPosInOrder;
     int station; 
   };
 
-
 // Implementation of the second, collaborative algorithm proposed by Pinkam et al.
-
 class Pinkam2 : public Algorithm {
 
 public:

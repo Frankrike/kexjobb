@@ -40,7 +40,7 @@ namespace algorithm {
             break;
           }
         }
-        if(r.item == -1) {
+        if(foundStation) {
           // Pick a new item to deliver to my station
           assignItem(r, id);
         }
@@ -100,7 +100,7 @@ namespace algorithm {
         vector<int> adj = mission.adjPos(mission.items[itemId].shelfCoors);
         for(int pos : adj) {
           int dist = distance(r.pos, pos);
-          if(dist < bestDistance) {
+          if(dist < bestDistance && dist >= 0) {
             bestDistance = dist;
             chosenItem = itemId;
           }
@@ -113,7 +113,6 @@ namespace algorithm {
     }
     // All remaining items for this station was already assigned
     else {
-      assert(false); // This should never happen in pinkam1
       assignedItem[id] = -1;
       return false; 
 

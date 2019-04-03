@@ -18,14 +18,13 @@ namespace algorithm {
     assignment empty;
     empty.item = -1;
     empty.station = -1;
+    empty.itemPosInOrder = -1;
     assignedItem.assign(state.robots.size(), empty);
     assignedTo.resize(state.stations.size());
     for(int i = 0; i < int(state.stations.size()); i++) {
         state.stations[i].order = i < int(mission.orders.size()) ? i : -1;
         if (state.stations[i].order != -1) {
-          for(int j = 0; j < int(mission.orders[state.stations[i].order].items.size()); j++) {
-            assignedTo[i].push_back(-1);
-          }
+          assignedTo[i].assign(mission.orders[state.stations[i].order].items.size(), -1);
         }
     }
   }
@@ -51,6 +50,7 @@ namespace algorithm {
             r.item = -1;
             assignedItem[id].item = -1;
             assignedItem[id].station = -1;
+            assignedItem[id].itemPosInOrder = -1;
             break;
           }
         }
@@ -61,8 +61,8 @@ namespace algorithm {
       }
       // Second case, we are not carrying an item. 
       else {
-        // Assignment must have failed
         if(assignedItem[id].item == -1) {
+          // Assignment must have failed
           moveAround(r);
           continue;
         }

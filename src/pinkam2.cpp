@@ -17,15 +17,14 @@ namespace algorithm {
 
     assignment empty;
     empty.item = -1;
+    empty.itemPosInOrder = -1;
     empty.station = -1;
     assignedItem.assign(state.robots.size(), empty);
     assignedTo.resize(state.stations.size());
     for(int i = 0; i < int(state.stations.size()); i++) {
         state.stations[i].order = i < int(mission.orders.size()) ? i : -1;
         if (state.stations[i].order != -1) {
-          for(int j = 0; j < int(mission.orders[state.stations[i].order].items.size()); j++) {
-            assignedTo[i].push_back(-1);
-          }
+          assignedTo[i].assign(mission.orders[state.stations[i].order].items.size(), -1);
         }
     }
   }
@@ -42,15 +41,17 @@ namespace algorithm {
         for(int s : mission.adjStations(r.pos)) {
           if(s == assignedItem[id].station) {
             foundStation = true;
-            assignedTo[s][assignedItem[id].itemPosInOrder] = -1; // Must be before deliverItem
+            assignedTo[s][assignedItem[id].itemPosInOrder] = -1; // Must be before deliverItem, otherwise this might update a new order
             deliverItem(assignedItem[id].itemPosInOrder, s);
+
             r.item = -1;
             assignedItem[id].item = -1;
             assignedItem[id].station = -1;
+            assignedItem[id].itemPosInOrder = -1;
             break;
           }
         }
-        if(r.item == -1) {
+        if(foundStation) {
           // Pick a new item to deliver to my station
           assignItem(r, id);
         }
@@ -107,7 +108,7 @@ namespace algorithm {
           vector<int> adj = mission.adjPos(mission.items[itemId].shelfCoors);
           for(int pos : adj) {
             int dist = distance(r.pos, pos);
-            if(dist < bestDistance) {
+            if(dist < bestDistance && dist >= 0) {
               bestDistance = dist;
               chosenItem = itemId;
               chosenItemPosInOrder = i;
@@ -124,7 +125,7 @@ namespace algorithm {
       assignedTo[chosenStation][chosenItemPosInOrder] = id;
       return true;
     }
-    // All remaining items for this station was already assigned
+    // No stations has unassigned items that are currently reachable for robot r
     else {
       assignedItem[id].item = -1;
       assignedItem[id].station = -1;
@@ -143,8 +144,11 @@ namespace algorithm {
     mission::order order = mission.orders[station.order];
 
     assert(station.fulfilled[itemPosInOrder] == false);
+
+    //Deliver item
     station.fulfilled[itemPosInOrder] = true;
 
+    //Check if the station needs a new order
     bool stationFull = true;
     for (bool b : station.fulfilled)
       stationFull &= b;
