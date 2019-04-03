@@ -64,7 +64,7 @@ shelfCases = [
 ]
 
 shelfRingCases = [
-  Testcase("shelves2{}".format(i), './missiongen.out seed={} mode=shelves2 shelvesX=3 shelvesY=2 margin=2 marginStations=3 robots=8 stations=8 orders=30'.format(i))
+  Testcase("shelves_ring{}".format(i), './missiongen.out seed={} mode=shelves2 shelvesX=3 shelvesY=2 margin=2 marginStations=3 robots=8 stations=8 orders=30'.format(i))
   for i in range(NUMCASES)
 ]
 
