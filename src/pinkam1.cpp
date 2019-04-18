@@ -1,7 +1,7 @@
 #include "pinkam1.h"
 
 #include <iostream>
-#include <random>
+#include "random.h"
 #include <set>
 #include <cassert>
 

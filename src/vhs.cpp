@@ -1,7 +1,7 @@
 #include "vhs.h"
 
 #include <iostream>
-#include <random>
+#include "random.h"
 #include <set>
 #include <cassert>
 #include <queue>
