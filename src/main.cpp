@@ -66,9 +66,9 @@ int main(int argc, char* argv[])
   while(!situation.missionCompleted() && turn++ < maxTurns) {
     algorithm->makeMove();
     gui.addState(situation.state);
-    cerr << "--------------\nturn: " << turn
+    //cerr << "--------------\nturn: " << turn
         //<< " encoded: " << situation.state.encode(situation.mission)
-        << endl << situation.debugView() << endl;
+        //<< endl << situation.debugView() << endl;
   }
 
   cerr << situation.mission.toString() << endl;

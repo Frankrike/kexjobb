@@ -117,6 +117,29 @@ namespace algorithm {
         return;
       }
     }
+  }
+
+  void Algorithm::moveTowards2(state::robot &r, pair<int, int> coors) {
+    mission::Mission &mission = situation->mission;
+    vector<int> goalPositions = mission.adjPos(coors);
+    
+    int bestDist = 1e9;
+    int nextPos = -1;
+    // Try to do a BFS-move
+    for(int goalPos : goalPositions) {
+      for(int startPos : mission.adjPos(r.pos)) {
+        if(occupied(startPos)) continue;
+        int dist = collisionDistance(startPos, goalPos);
+        if(dist != -1 && dist < bestDist) {
+          nextPos = startPos;
+          bestDist = dist;
+        }
+      }
+    }
+    if(nextPos != -1) {
+      r.pos = nextPos;
+      return;
+    }
 
     // Otherwise do something random
     vector<int> adj = mission.adjPos(r.pos);
@@ -189,6 +212,35 @@ namespace algorithm {
     }
     return distance;
   }
+
+  int Algorithm::collisionDistance(int start, int destination) {
+    vector<int> parent(situation->mission.positions, -1);
+    queue<int> q;
+    q.push(start);
+    parent[start] = -3;
+    while(!q.empty()) {
+      int pos = q.front();
+      q.pop();
+      for(int neighbor : situation->mission.adjPos(pos)) {
+        if(parent[neighbor] == -1) {
+          q.push(neighbor);
+          parent[neighbor] = pos;
+        }
+      }
+    }
+
+    int curpos = destination;
+    int distance = 0;
+    while(curpos != start) {
+      distance++;
+      if(curpos < 0) {
+        return -1;
+      }
+      curpos = parent[curpos];
+    }
+    return distance;
+  }
+
 
   // Try to move somewhere and be out of the way. To be called for robots that have nothing to do
   void Algorithm::moveAround(state::robot &r) {
