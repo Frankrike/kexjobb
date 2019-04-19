@@ -1,6 +1,7 @@
 import subprocess
 import os
 import time
+import numpy as np
 
 DIR = "genmissions"
 NUMCASES = 10
@@ -42,19 +43,25 @@ class Algorithm:
 
 def experiment(name, algos, cases):
   global output
-  outputHere = ""
-  outputHere += name + "\n"
+  percentiles = (0, 25, 50, 75, 100)
   for case in cases:
     case.generate()
+
+  results = []
+  for algo in algos:
+    results.append([algo.run(case) for case in cases])
+
+  outputHere = ""
+  outputHere += name + "\n%-tile\t"
   for algo in algos:
     outputHere += "{}\t".format(algo.name)
   outputHere += "\n"
-  for algo in algos:
-    tot = 0
-    for case in cases:
-      tot += algo.run(case)
-    outputHere += "{:.2f}\t".format(tot/len(cases))
-  outputHere += "\n"
+
+  for p in percentiles:
+    outputHere += "{}\t".format(p)
+    for result in results:
+      outputHere += "{:.2f}\t".format(np.percentile(np.array(result), p))
+    outputHere += "\n"
   print(outputHere)
   output += outputHere
 
