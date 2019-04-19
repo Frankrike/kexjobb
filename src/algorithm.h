@@ -14,6 +14,8 @@ protected:
   bool occupied(int pos);
   int BFS(int start, int destination);
   int distance(int start, int destination);
+  void moveTowards2(state::robot &r, pair<int, int> coors);
+  int collisionDistance(int start, int destination);
 public:
   Algorithm(Situation* s);  
   virtual void makeMove();
