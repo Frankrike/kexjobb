@@ -5,10 +5,10 @@ OUT_GEN = missiongen.out
 CC = g++ -std=c++11
 FLAGS = -Wall
 
-_OBJS = main.o mission.o state.o situation.o algorithm.o pinkam1.o pinkam2.o gui.o exhaustive.o vhs.o
+_OBJS = main.o mission.o state.o situation.o algorithm.o pinkam1.o pinkam2.o gui.o exhaustive.o vhs.o random.o
 OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
 
-_OBJS_GEN = mission.o missiongen.o
+_OBJS_GEN = mission.o missiongen.o random.o
 OBJS_GEN = $(patsubst %,$(OBJDIR)/%,$(_OBJS_GEN))
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
