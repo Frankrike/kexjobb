@@ -129,5 +129,11 @@ experiment("shelves, ring of stations, moveTowards2", algorithmsMoveTowards2, sh
 experiment("small shelves", algorithms + [exhaustive], smallShelfCases)
 experiment("small shelves, ring of stations", algorithms + [exhaustive], smallShelfRingCases)
 
+experiment("small shelves, allow collisions", algorithmsAllowCol + [exhaustive], smallShelfCases)
+experiment("small shelves, ring of stations, allow collisions", algorithmsAllowCol + [exhaustive], smallShelfRingCases)
+
+experiment("small shelves, moveTowards2", algorithmsMoveTowards2 + [exhaustive], smallShelfCases)
+experiment("small shelves, ring of stations, moveTowards2", algorithmsMoveTowards2 + [exhaustive], smallShelfRingCases)
+
 print("FINAL OUTPUT")
 print(output)
