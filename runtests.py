@@ -4,8 +4,8 @@ import time
 import numpy as np
 
 DIR = "genmissions"
-NUMCASES = 10
-NUMSMALLCASES = 3
+NUMCASES = 20
+NUMSMALLCASES = 5
 FNULL = open(os.devnull, 'w')
 subprocess.call("make", shell=True)
 subprocess.call("mkdir {}".format(DIR), shell=True)
@@ -73,12 +73,12 @@ algorithms = [
 exhaustive = Algorithm("exhaustive", "./robotar.out showgui=false algorithm=exhaustive")
 
 shelfCases = [
-  Testcase("shelves{}".format(i), './missiongen.out seed={} mode=shelves shelvesX=3 shelvesY=2 shelfLength=4 margin=2 marginStations=3 robots=8 stations=8 orders=30 ordersize=5'.format(i))
+  Testcase("shelves{}".format(i), './missiongen.out seed={} mode=shelves shelvesX=3 shelvesY=2 shelfLength=4 margin=2 marginStations=3 robots=8 stations=8 orders=100 ordersize=5'.format(i))
   for i in range(NUMCASES)
 ]
 
 shelfRingCases = [
-  Testcase("shelves_ring{}".format(i), './missiongen.out seed={} mode=shelves2 shelvesX=3 shelvesY=2 shelfLength=4 margin=2 marginStations=3 robots=8 stations=8 orders=30 ordersize=5'.format(i))
+  Testcase("shelves_ring{}".format(i), './missiongen.out seed={} mode=shelves2 shelvesX=3 shelvesY=2 shelfLength=4 margin=2 marginStations=3 robots=8 stations=8 orders=100 ordersize=5'.format(i))
   for i in range(NUMCASES)
 ]
 
