@@ -11,6 +11,12 @@ using namespace std;
 
 namespace algorithm {
 
+  bool allowCollisions = false;
+  int moveTowardsVersion = 1;
+
+  void setMoveTowardsVersion(int version){moveTowardsVersion = version;};
+  void setAllowCollisions(bool allow){allowCollisions = allow;}; // true or false (default)
+
   Algorithm::Algorithm(Situation* s) : situation(s) {}
 
   void Algorithm::makeMove() {
@@ -106,6 +112,10 @@ namespace algorithm {
   }
 
   void Algorithm::moveTowards(state::robot &r, pair<int, int> coors) {
+    if (moveTowardsVersion == 2) {
+      moveTowards2(r, coors);
+      return;
+    }
     mission::Mission &mission = situation->mission;
     vector<int> goalPositions = mission.adjPos(coors);
     
@@ -117,6 +127,7 @@ namespace algorithm {
         return;
       }
     }
+    moveAround(r);
   }
 
   void Algorithm::moveTowards2(state::robot &r, pair<int, int> coors) {
@@ -142,12 +153,7 @@ namespace algorithm {
     }
 
     // Otherwise do something random
-    vector<int> adj = mission.adjPos(r.pos);
-    if (adj.size() != 0) {
-      int pos = adj[rand()%adj.size()];
-      if (!occupied(pos))
-        r.pos = pos;
-    }
+    moveAround(r);
   }
 
 
@@ -183,6 +189,8 @@ namespace algorithm {
   }
 
   int Algorithm::distance(int start, int destination) {
+    if (moveTowardsVersion == 2)
+      return collisionDistance(start, destination);
     vector<int> parent(situation->mission.positions, -1);
     queue<int> q;
     q.push(start);
@@ -254,6 +262,7 @@ namespace algorithm {
   }
 
   bool Algorithm::occupied(int pos) {
+    if (allowCollisions) return false;
     for(state::robot r : situation->state.robots)
       if (r.pos == pos)
         return true;

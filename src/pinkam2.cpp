@@ -57,7 +57,7 @@ namespace algorithm {
         }
         // Only move if we didn't deliver anything
         else {
-          moveTowards2(r, mission.stations[assignedItem[id].station].coors);
+          moveTowards(r, mission.stations[assignedItem[id].station].coors);
         }
       }
       // Second case, we are not carrying an item. 
@@ -80,7 +80,7 @@ namespace algorithm {
         }
         // If we didn't pick something up, we can move instead
         if(!foundShelf) {
-          moveTowards2(r, mission.items[assignedItem[id].item].shelfCoors);
+          moveTowards(r, mission.items[assignedItem[id].item].shelfCoors);
         }
 
       }
@@ -107,7 +107,7 @@ namespace algorithm {
           // Their might be up to 4 adjacent squares to the shelf
           vector<int> adj = mission.adjPos(mission.items[itemId].shelfCoors);
           for(int pos : adj) {
-            int dist = collisionDistance(r.pos, pos);
+            int dist = distance(r.pos, pos);
             if(dist < bestDistance && dist >= 0) {
               bestDistance = dist;
               chosenItem = itemId;

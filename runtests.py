@@ -2,13 +2,16 @@ import subprocess
 import os
 import time
 import numpy as np
+import matplotlib.pyplot as plt
 
 DIR = "genmissions"
-NUMCASES = 20
+PLOTDIR = "plots"
+NUMCASES = 10
 NUMSMALLCASES = 5
 FNULL = open(os.devnull, 'w')
 subprocess.call("make", shell=True)
 subprocess.call("mkdir {}".format(DIR), shell=True)
+subprocess.call("mkdir {}".format(PLOTDIR), shell=True)
 output = ""
 
 class Testcase:
@@ -48,8 +51,10 @@ def experiment(name, algos, cases):
     case.generate()
 
   results = []
+  labels = []
   for algo in algos:
     results.append([algo.run(case) for case in cases])
+    labels.append(algo.name)
 
   outputHere = ""
   outputHere += name + "\n%-tile\t"
@@ -65,10 +70,30 @@ def experiment(name, algos, cases):
   print(outputHere)
   output += outputHere
 
+  makePlot(name, results, labels)
+
+def makePlot(name, data, labels):
+  fileName = "_".join([s.strip(",") for s in name.split()]) + ".png"
+  fig, ax = plt.subplots()
+  ax.set_title(name)
+  ax.boxplot(data, labels=labels)
+  #ax.set_ylim(bottom=0)
+  plt.savefig(PLOTDIR + "/" + fileName)
+
 algorithms = [
   Algorithm("pinkam1", "./robotar.out showgui=false algorithm=pinkam1"),
   Algorithm("pinkam2", "./robotar.out showgui=false algorithm=pinkam2"),
   Algorithm("vhs", "./robotar.out showgui=false algorithm=vhs")
+]
+algorithmsAllowCol = [
+  Algorithm("pinkam1", "./robotar.out showgui=false allowcollisions=true algorithm=pinkam1"),
+  Algorithm("pinkam2", "./robotar.out showgui=false allowcollisions=true algorithm=pinkam2"),
+  Algorithm("vhs", "./robotar.out showgui=false allowcollisions=true algorithm=vhs")
+]
+algorithmsMoveTowards2 = [
+  Algorithm("pinkam1", "./robotar.out showgui=false moveversion=2 algorithm=pinkam1"),
+  Algorithm("pinkam2", "./robotar.out showgui=false moveversion=2 algorithm=pinkam2"),
+  Algorithm("vhs", "./robotar.out showgui=false moveversion=2 algorithm=vhs")
 ]
 exhaustive = Algorithm("exhaustive", "./robotar.out showgui=false algorithm=exhaustive")
 
@@ -94,6 +119,13 @@ smallShelfRingCases = [
 
 experiment("shelves", algorithms, shelfCases)
 experiment("shelves, ring of stations", algorithms, shelfRingCases)
+
+experiment("shelves, allow collisions", algorithmsAllowCol, shelfCases)
+experiment("shelves, ring of stations, allow collisions", algorithmsAllowCol, shelfRingCases)
+
+experiment("shelves, moveTowards2", algorithmsMoveTowards2, shelfCases)
+experiment("shelves, ring of stations, moveTowards2", algorithmsMoveTowards2, shelfRingCases)
+
 experiment("small shelves", algorithms + [exhaustive], smallShelfCases)
 experiment("small shelves, ring of stations", algorithms + [exhaustive], smallShelfRingCases)
 

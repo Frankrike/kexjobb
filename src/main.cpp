@@ -31,6 +31,10 @@ int main(int argc, char* argv[])
       showGui = value == "true";
     else if (param == "maxturns")
       maxTurns = stoi(value);
+    else if (param == "allowcollisions")
+      algorithm::setAllowCollisions(value == "true");
+    else if (param == "moveversion")
+      algorithm::setMoveTowardsVersion(stoi(value));
     else
       cerr << "Uknown parameter \"" << param << "\"" << endl;
   }

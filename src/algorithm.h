@@ -22,5 +22,8 @@ public:
   virtual string name();
 };
 
+void setMoveTowardsVersion(int version); // 1 (default) or 2
+void setAllowCollisions(bool allow); // true or false (default)
+
 }
 #endif
