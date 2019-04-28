@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 DIR = "genmissions"
 PLOTDIR = "plots"
 NUMCASES = 10
-NUMSMALLCASES = 5
+NUMSMALLCASES = 10
 FNULL = open(os.devnull, 'w')
 subprocess.call("make", shell=True)
 subprocess.call("mkdir {}".format(DIR), shell=True)
@@ -96,6 +96,7 @@ algorithmsMoveTowards2 = [
   Algorithm("vhs", "./robotar.out showgui=false moveversion=2 algorithm=vhs")
 ]
 exhaustive = Algorithm("exhaustive", "./robotar.out showgui=false algorithm=exhaustive")
+exhaustiveAllowCol = Algorithm("exhaustive", "./robotar.out showgui=false allowcollisions=true algorithm=exhaustive")
 
 shelfCases = [
   Testcase("shelves{}".format(i), './missiongen.out seed={} mode=shelves shelvesX=3 shelvesY=2 shelfLength=4 margin=2 marginStations=3 robots=8 stations=8 orders=100 ordersize=5'.format(i))
@@ -117,6 +118,8 @@ smallShelfRingCases = [
   for i in range(NUMSMALLCASES)
 ]
 
+
+
 experiment("shelves", algorithms, shelfCases)
 experiment("shelves, ring of stations", algorithms, shelfRingCases)
 
@@ -129,8 +132,8 @@ experiment("shelves, ring of stations, moveTowards2", algorithmsMoveTowards2, sh
 experiment("small shelves", algorithms + [exhaustive], smallShelfCases)
 experiment("small shelves, ring of stations", algorithms + [exhaustive], smallShelfRingCases)
 
-experiment("small shelves, allow collisions", algorithmsAllowCol + [exhaustive], smallShelfCases)
-experiment("small shelves, ring of stations, allow collisions", algorithmsAllowCol + [exhaustive], smallShelfRingCases)
+experiment("small shelves, allow collisions", algorithmsAllowCol + [exhaustiveAllowCol], smallShelfCases)
+experiment("small shelves, ring of stations, allow collisions", algorithmsAllowCol + [exhaustiveAllowCol], smallShelfRingCases)
 
 experiment("small shelves, moveTowards2", algorithmsMoveTowards2 + [exhaustive], smallShelfCases)
 experiment("small shelves, ring of stations, moveTowards2", algorithmsMoveTowards2 + [exhaustive], smallShelfRingCases)
